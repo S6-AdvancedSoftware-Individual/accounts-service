@@ -1,62 +1,62 @@
 services:
-  # api:
-  #   build:
-  #     context: ./api
-  #     dockerfile: Dockerfile
-  #   container_name: cockatoo-accounts-api
-  #   ports:
-  #     - "8080:8080"
-  #     - "8081:8081"
-  #   environment:
-  #     - DB_HOST=postgres
-  #     - DB_USER=admin
-  #     - DB_PASSWORD=admin123
-  #     - DB_NAME=postdb
-  #     - DB_PORT=5432
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   networks:
-  #     - cockatoo-posts-network
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: cockatoo-accounts-api
+    ports:
+      - "9080:8080" 
+      - "9081:8081" 
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=admin
+      - DB_PASSWORD=admin123
+      - DB_NAME=accountdb
+      - DB_PORT=5432
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - cockatoo-account-network
 
   postgres:
     build:
       context: ./db
       dockerfile: Dockerfile
-    container_name: cockatoo-posts-db
+    container_name: cockatoo-account-db
     environment:
-      POSTGRES_DB: postdb
+      POSTGRES_DB: accountdb
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin123
     ports:
-      - "5432:5432"
+      - "6543:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - cockatoo-posts-network
+      - cockatoo-account-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d postdb"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d accountdb"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: cockatoo-posts-pgadmin
+    container_name: cockatoo-account-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin123
     ports:
-      - "5050:80"
+      - "6060:80"
     depends_on:
       - postgres
     networks:
-      - cockatoo-posts-network
+      - cockatoo-account-network
 
 volumes:
   postgres_data:
-    name: cockatoo-posts-db-data
+    name: cockatoo-account-db-data
 
 networks:
-  cockatoo-posts-network:
-    name: cockatoo-posts-network
+  cockatoo-account-network:
+    name: cockatoo-account-network
