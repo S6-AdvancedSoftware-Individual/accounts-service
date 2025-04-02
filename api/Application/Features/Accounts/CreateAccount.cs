@@ -15,7 +15,7 @@ namespace Application.Features.Accounts
 
             public async Task<Guid> Handle(Command request, CancellationToken cancellationToken)
             {
-                var post = new Account
+                var account = new Account
                 {
                     Id = Guid.NewGuid(),
                     Username = request.Username,
@@ -26,10 +26,10 @@ namespace Application.Features.Accounts
                     LastUpdatedAt = DateTime.UtcNow,
                 };
 
-                _context.Accounts.Add(post);
+                _context.Accounts.Add(account);
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return post.Id;
+                return account.Id;
             }
         }
     }

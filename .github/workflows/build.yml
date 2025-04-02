@@ -1,4 +1,4 @@
-name: Build and push the Account Microservice Docker Image
+name: SonarCloud & Docker build
 on:
   push:
     branches:
