@@ -1,62 +1,17 @@
 services:
-  api:
+  cockatoo-accounts-api:
     build:
       context: ./api
       dockerfile: Dockerfile
     container_name: cockatoo-accounts-api
     ports:
-      - "9080:8080" 
-      - "9081:8081" 
+      - "9080:8080"
+      - "9081:8081"
+    env_file:
+      - .env
     environment:
-      - DB_HOST=postgres
-      - DB_USER=admin
-      - DB_PASSWORD=admin123
-      - DB_NAME=accountdb
-      - DB_PORT=5432
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - cockatoo-account-network
-
-  postgres:
-    build:
-      context: ./db
-      dockerfile: Dockerfile
-    container_name: cockatoo-account-db
-    environment:
-      POSTGRES_DB: accountdb
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
-    ports:
-      - "6543:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - cockatoo-account-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d accountdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: cockatoo-account-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
-    ports:
-      - "6060:80"
-    depends_on:
-      - postgres
-    networks:
-      - cockatoo-account-network
-
-volumes:
-  postgres_data:
-    name: cockatoo-account-db-data
-
-networks:
-  cockatoo-account-network:
-    name: cockatoo-account-network
+      - DB_USERID=${DB_USERID}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_SERVER=${DB_SERVER}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}

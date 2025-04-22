@@ -2,6 +2,17 @@
 
 The service responsible for handling CRUD operations of accounts and detailed account data retrievals.
 
+## Prerequisites
+
+You should create a local .env file, this should contain the following information of your remote database.
+
+```DB_USERID=
+DB_PASSWORD=
+DB_SERVER=
+DB_PORT=
+DB_DATABASE=
+```
+
 ## Build images
 
 ``docker-compose build``
