@@ -2,6 +2,7 @@
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Api.Controllers
 {
@@ -16,6 +17,15 @@ namespace Api.Controllers
         public async Task<ActionResult<Guid>> Create([FromBody] CreateAccount.Command command)
         {
             var result = await _mediator.Send(command);
+
+            if (result == Guid.Empty)
+            {
+                Log.Information("Account creation failed");
+                return BadRequest("Account creation failed");
+            }
+
+            Log.Information("Account created with ID: {Id}", result);
+
             return Ok(result);
         }
 
@@ -23,10 +33,13 @@ namespace Api.Controllers
         public async Task<ActionResult<Account>> Get(Guid id)
         {
             var result = await _mediator.Send(new GetAccount.Query(id));
+
             if (result == null)
             {
+                Log.Information("No account associated with ID '{Id}' found", result);
                 return NotFound();
             }
+
             return Ok(result);
         }
 
@@ -36,6 +49,7 @@ namespace Api.Controllers
             var result = await _mediator.Send(new GetAccountName.Query(id));
             if (result == null)
             {
+                Log.Information("No name or account associated with ID '{Id}' found", result);
                 return NotFound();
             }
             return Ok(result);

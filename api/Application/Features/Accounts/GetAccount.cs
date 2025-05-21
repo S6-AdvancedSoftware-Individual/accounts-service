@@ -1,7 +1,6 @@
 using Domain.Entities;
 using MediatR;
 using PostService.Application.Common.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Accounts;
 
