@@ -1,3 +1,4 @@
+using DotNetEnv;
 using HealthChecks.UI.Client;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -5,13 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using PostService.Application.Common.Interfaces;
 using Serilog;
 
-var dbUser = Environment.GetEnvironmentVariable("DB_USERID") ?? "";
-var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "";
-var dbServer = Environment.GetEnvironmentVariable("DB_SERVER") ?? "";
-var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "";
-var dbDatabase = Environment.GetEnvironmentVariable("DB_DATABASE") ?? "";
+Env.Load();
+
 var betterstack_sourceToken = Environment.GetEnvironmentVariable("BETTERSTACK_SOURCETOKEN") ?? "";
 var betterstack_endpoint = Environment.GetEnvironmentVariable("BETTERSTACK_ENDPOINT") ?? "";
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "";
+var dbDatabase = Environment.GetEnvironmentVariable("DB_DATABASE") ?? "";
+var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "";
+var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "";
+
+// Add DbContext
+var connectionString = $"Host={dbHost};Database={dbDatabase};Username={dbUser};Password={dbPassword}";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,9 +49,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-
-// Add DbContext
-var connectionString = $"User Id={dbUser};Password={dbPassword};Server={dbServer};Port={dbPort};Database={dbDatabase}";
 
 builder.Services.AddHealthChecks();
 
