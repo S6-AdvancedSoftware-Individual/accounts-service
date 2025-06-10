@@ -7,7 +7,7 @@ using PostService.Application.Common.Interfaces;
 using Serilog;
 using Application.Common.Interfaces;
 
-const string API_VERSION = "v2.3";
+const string API_VERSION = "v2.4";
 
 Env.Load();
 
@@ -39,6 +39,28 @@ Log.Logger = new LoggerConfiguration()
 
 Log.Information("API Version: {Version}", API_VERSION);
 Log.Information("Starting up the application...");
+Log.Information("Checking environment variables...");
+
+if (string.IsNullOrEmpty(dbUser) || string.IsNullOrEmpty(dbPassword) || string.IsNullOrEmpty(dbHost) ||
+   string.IsNullOrEmpty(dbDatabase))
+{
+    Log.Error("Database connection information is missing.");
+    throw new SystemException("Application misconfigured, primary database environment variables are missing.");
+}
+
+if (string.IsNullOrEmpty(betterstack_endpoint) || string.IsNullOrEmpty(betterstack_sourceToken))
+{
+    Log.Error("BetterStack connection information is missing.");
+    throw new SystemException("Application misconfigured, monitoring & logging environment variables are missing.");
+}
+
+if(string.IsNullOrEmpty(messageQueueConnectionString) || string.IsNullOrEmpty(messageQueueTopic))
+{
+    Log.Error("Azure message bus connection information is missing.");
+    throw new SystemException("Application misconfigured, message queue environment variables are missing.");
+}
+
+Log.Information("Environment variables checked, all variables are valid.");
 
 builder.Logging.ClearProviders();
 builder.Host.UseSerilog();

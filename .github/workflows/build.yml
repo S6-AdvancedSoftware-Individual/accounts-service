@@ -76,6 +76,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_ACCOUNT_MICROSERVICE }}:${{ github.sha }}
 
   deploy-to-aks:
+    name: Deploy to AKS
     runs-on: ubuntu-latest
     needs: build-and-push
     steps:
@@ -86,6 +87,11 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f cockatoo-accounts-api-deployment.yaml
+          kubectl apply -f cockatoo-accounts-api-service.yaml
 
       - name: Deploy new image
         run: |
