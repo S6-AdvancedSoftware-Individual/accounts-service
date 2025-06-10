@@ -5,15 +5,22 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using PostService.Application.Common.Interfaces;
 using Serilog;
+using Application.Common.Interfaces;
+
+const string API_VERSION = "v2.2";
 
 Env.Load();
 
 var betterstack_sourceToken = Environment.GetEnvironmentVariable("BETTERSTACK_SOURCETOKEN") ?? "";
 var betterstack_endpoint = Environment.GetEnvironmentVariable("BETTERSTACK_ENDPOINT") ?? "";
+
 var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "";
 var dbDatabase = Environment.GetEnvironmentVariable("DB_DATABASE") ?? "";
 var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "";
 var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "";
+
+var messageQueueConnectionString = Environment.GetEnvironmentVariable("COCKATOO_Q") ?? "";
+var messageQueueTopic = Environment.GetEnvironmentVariable("COCKATOO_Q_USERNAME_TOPIC") ?? "";
 
 // Add DbContext
 var connectionString = $"Host={dbHost};Database={dbDatabase};Username={dbUser};Password={dbPassword}";
@@ -22,6 +29,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Configure SeriLog as the global logger.
 Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
     .WriteTo.BetterStack(
         sourceToken: betterstack_sourceToken,
         betterStackEndpoint: betterstack_endpoint
@@ -29,6 +37,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .CreateLogger();
 
+Log.Information("API Version: {Version}", API_VERSION);
 Log.Information("Starting up the application...");
 
 builder.Logging.ClearProviders();
@@ -64,10 +73,20 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddScoped<IAccountDbContext>(provider =>
     provider.GetRequiredService<AccountDbContext>());
 
+builder.Services.AddSingleton<IMessagePublisher>(provider =>
+{
+    var logger = provider.GetRequiredService<ILogger<ServiceBusMessagePublisher>>();
+    return new ServiceBusMessagePublisher(
+        messageQueueConnectionString,
+        messageQueueTopic,
+        logger
+    );
+});
+
 var app = builder.Build();
 
 // Configure health checks
-app.MapHealthChecks("/_health", new HealthCheckOptions
+app.MapHealthChecks("/accounts/_health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });

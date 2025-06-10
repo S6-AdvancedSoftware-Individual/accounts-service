@@ -7,7 +7,7 @@ namespace Application.Features.Accounts
 {
     public class CreateAccount
     {
-        public record Command(string Username, string Email, string Biography, AccountRole Role) : IRequest<Guid>;
+        public record Command(string Username, AccountRole Role) : IRequest<Guid>;
 
         public class Handler(IAccountDbContext context) : IRequestHandler<Command, Guid>
         {
@@ -19,8 +19,6 @@ namespace Application.Features.Accounts
                 {
                     Id = Guid.NewGuid(),
                     Username = request.Username,
-                    Email = request.Email,
-                    Biography = request.Biography,
                     Role = request.Role,
                     CreationAt = DateTime.UtcNow,
                     LastUpdatedAt = DateTime.UtcNow,

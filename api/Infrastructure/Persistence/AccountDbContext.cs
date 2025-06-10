@@ -20,8 +20,6 @@ public class AccountDbContext : DbContext, IAccountDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Username).IsRequired();
-            entity.Property(e => e.Email).IsRequired();
-            entity.Property(e => e.Biography).IsRequired();
             entity.Property(e => e.Role).IsRequired();
         });
     }

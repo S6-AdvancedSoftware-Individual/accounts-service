@@ -54,5 +54,19 @@ namespace Api.Controllers
             }
             return Ok(result);
         }
+
+        [HttpPatch("{id}/name")]
+        public async Task<ActionResult<string>> UpdateUsername(Guid id, [FromBody] string newUsername)
+        {
+            var result = await _mediator.Send(new UpdateUsername.Command(id, newUsername));
+
+            if (result == null)
+            {
+                Log.Information("No account associated with ID '{Id}' found", id);
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
     }
 }
