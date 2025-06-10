@@ -7,7 +7,7 @@ using PostService.Application.Common.Interfaces;
 using Serilog;
 using Application.Common.Interfaces;
 
-const string API_VERSION = "v2.4";
+const string API_VERSION = "v2.5";
 
 Env.Load();
 
@@ -54,7 +54,7 @@ if (string.IsNullOrEmpty(betterstack_endpoint) || string.IsNullOrEmpty(bettersta
     throw new SystemException("Application misconfigured, monitoring & logging environment variables are missing.");
 }
 
-if(string.IsNullOrEmpty(messageQueueConnectionString) || string.IsNullOrEmpty(messageQueueTopic))
+if (string.IsNullOrEmpty(messageQueueConnectionString) || string.IsNullOrEmpty(messageQueueTopic))
 {
     Log.Error("Azure message bus connection information is missing.");
     throw new SystemException("Application misconfigured, message queue environment variables are missing.");
