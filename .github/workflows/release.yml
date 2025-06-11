@@ -123,5 +123,6 @@ jobs:
         env:
           ACCOUNT_DB_CONNECTION_STRING: ${{ secrets.ACCOUNT_DB_CONNECTION_STRING }}
           POSTS_DB_CONNECTION_STRING: ${{ secrets.POSTS_DB_CONNECTION_STRING }}
+          POST_SEARCH_DB_CONNECTION_STRING: ${{ secrets.POST_SEARCH_DB_CONNECTION_STRING }}
         run: python tests/username-changes.py
         timeout-minutes: 2
