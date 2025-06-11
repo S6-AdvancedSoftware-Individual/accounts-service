@@ -54,8 +54,8 @@ with posts_db_conn.cursor() as cursor:
     assert cursor.fetchone(), "No post found with updated username in PostsDb"
 
 # 5. Connect to PostsSearchDb and verify post author username updated
-posts_db_conn = psycopg2.connect(POST_SEARCH_DB_CONNECTION_STRING)
-with posts_db_conn.cursor() as cursor:
+post_search_db_conn = psycopg2.connect(POST_SEARCH_DB_CONNECTION_STRING)
+with post_search_db_conn.cursor() as cursor:
     cursor.execute(
         'SELECT 1 FROM "Posts" WHERE "AuthorId" = %s AND "AuthorName" = %s',
         (USER_ID, TEST_USERNAME),
