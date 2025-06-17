@@ -68,5 +68,17 @@ namespace Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("me/{auth0UserId}")]
+        public async Task<ActionResult<Account>> GetByAuth0UserId(string auth0UserId)
+        {
+            var result = await _mediator.Send(new GetAccountByAuth0UserId.Query(auth0UserId));
+            if (result == null)
+            {
+                Log.Information("No account associated with Auth0 User ID '{Auth0UserId}' found", auth0UserId);
+                return NotFound();
+            }
+            return Ok(result);
+        }
     }
 }
