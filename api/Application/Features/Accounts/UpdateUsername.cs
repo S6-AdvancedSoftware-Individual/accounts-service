@@ -23,6 +23,7 @@ public class UpdateUsername
             }
 
             account.Username = request.NewUsername;
+            account.LastUpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync(cancellationToken);
             await _publisher.PublishMessagesAsync([$"{request.AuthorId}:{request.NewUsername}"]);

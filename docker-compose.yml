@@ -10,10 +10,22 @@ services:
     env_file:
       - .env
     environment:
-      - DB_USERID=${DB_USERID}
+      # Database connection
+      - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - DB_SERVER=${DB_SERVER}
+      - DB_HOST=${DB_HOST}
       - DB_DATABASE=${DB_DATABASE}
-      - DB_PORT=${DB_PORT}
+
+      # Betterstack monitoring
       - BETTERSTACK_SOURCETOKEN=${BETTERSTACK_SOURCETOKEN}
+
+      # Azure Message Bus
       - BETTERSTACK_ENDPOINT=${BETTERSTACK_ENDPOINT}
+      - COCKATOO_Q=${COCKATOO_Q}
+      - COCKATOO_Q_USERNAME_TOPIC=${COCKATOO_Q_USERNAME_TOPIC}
+    networks:
+      - cockatoo-network
+
+networks:
+  cockatoo-network:
+    external: true
